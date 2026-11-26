@@ -142,7 +142,7 @@ def run(binary,emulator=None,libdir=None,quick=False):
                 while time.monotonic()<deadline and proc.poll() is None:
                     try:
                         candidate=request("/api/status")
-                        if candidate.get("checkpoint",{}).get("anchor") and candidate.get("syncPhase")=="running":status=candidate;break
+                        if isinstance(candidate,dict) and isinstance(candidate.get("checkpoint"),dict) and candidate["checkpoint"].get("anchor") and candidate.get("syncPhase")=="running":status=candidate;break
                     except (ValueError,OSError):pass
                     time.sleep(.5)
                 if status is None:raise ValueError("isolated node startup failed: "+log.read_text(errors="replace").split("___ Begin jemalloc statistics ___")[0][-4000:])
