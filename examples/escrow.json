@@ -1,0 +1,27 @@
+{
+  "name": "escrow",
+  "resources": {
+    "cash": {"initial": 4, "capacity": 4},
+    "escrow": {"initial": 0, "capacity": 4},
+    "seller": {"initial": 0, "capacity": 4},
+    "prepared": {"initial": 0, "capacity": 1},
+    "delivered": {"initial": 0, "capacity": 1},
+    "approved": {"initial": 0, "capacity": 1}
+  },
+  "roles": ["buyer", "seller", "settler"],
+  "invariants": [
+    {"weights": {"cash": 1, "escrow": 1, "seller": 1}, "op": "eq", "rhs": 4},
+    {"weights": {"prepared": 1, "delivered": -1}, "op": "ge", "rhs": 0},
+    {"weights": {"delivered": 1, "approved": -1}, "op": "ge", "rhs": 0}
+  ],
+  "actions": [
+    {"name":"fund","roles":["buyer","settler"],"guards":[{"weights":{"cash":1},"op":"eq","rhs":4}],"delta":{"cash":-4,"escrow":4}},
+    {"name":"prepare","roles":["seller","settler"],"guards":[{"weights":{"escrow":1},"op":"eq","rhs":4},{"weights":{"prepared":1},"op":"eq","rhs":0}],"delta":{"prepared":1}},
+    {"name":"deliver","roles":["seller","settler"],"guards":[{"weights":{"prepared":1},"op":"eq","rhs":1},{"weights":{"delivered":1},"op":"eq","rhs":0}],"delta":{"delivered":1}},
+    {"name":"approve","roles":["buyer","settler"],"guards":[{"weights":{"delivered":1},"op":"eq","rhs":1},{"weights":{"approved":1},"op":"eq","rhs":0}],"delta":{"approved":1}},
+    {"name":"release","roles":["settler"],"guards":[{"weights":{"approved":1},"op":"eq","rhs":1}],"delta":{"escrow":-4,"seller":4}}
+  ],
+  "goals":[
+    {"name":"settle","role":"settler","actions":["fund","prepare","deliver","approve","release"],"predicates":[{"weights":{"seller":1},"op":"eq","rhs":4}]}
+  ]
+}

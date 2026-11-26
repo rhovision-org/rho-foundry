@@ -1,0 +1,16 @@
+{
+  "name": "reservation",
+  "resources": {
+    "free": {"initial": 3, "capacity": 3},
+    "held": {"initial": 0, "capacity": 3},
+    "sold": {"initial": 0, "capacity": 3}
+  },
+  "roles": ["agent","customer"],
+  "invariants":[{"weights":{"free":1,"held":1,"sold":1},"op":"eq","rhs":3}],
+  "actions":[
+    {"name":"hold","roles":["agent","customer"],"guards":[],"delta":{"free":-1,"held":1}},
+    {"name":"cancel","roles":["agent"],"guards":[],"delta":{"held":-1,"free":1}},
+    {"name":"buy","roles":["agent","customer"],"guards":[],"delta":{"held":-1,"sold":1}}
+  ],
+  "goals":[{"name":"sellout","role":"agent","actions":["hold","buy"],"predicates":[{"weights":{"sold":1},"op":"eq","rhs":3}]}]
+}

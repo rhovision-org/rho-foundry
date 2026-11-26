@@ -1,0 +1,55 @@
+name: Foundry
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compiler:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s tests -v
+      - run: |
+          mkdir -p build
+          python -m foundry examples/escrow.json --out build/escrow
+          python -m foundry examples/reservation.json --out build/reservation
+      - uses: actions/upload-artifact@v4
+        with:
+          name: generated-contracts-${{ matrix.python }}
+          path: build/
+  rholo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch pinned public Rholo CI artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .local
+          gh api repos/rhovision-org/rholo/actions/artifacts/14977847392/zip > .local/rholo.zip
+          echo 'f2ecced8a2b085183654828e1061f67469b95e225f1ae8ce022ea8fd9a5167e1  .local/rholo.zip' | sha256sum -c
+          unzip -q .local/rholo.zip -d .local/rholo
+          chmod 700 .local/rholo/rnode
+          echo '232d12bd5d3fadc8371c26ec6a888ea48a4062b1187bb63c35b9d19423f28ead  .local/rholo/rnode' | sha256sum -c
+      - name: Execute generated contracts on isolated Rholo
+        run: PYTHONPATH=. python tools/runtime_check.py .local/rholo/rnode --out .local/runtime-results.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: actual-rholo-results
+          path: .local/runtime-results.json
+          if-no-files-found: error
