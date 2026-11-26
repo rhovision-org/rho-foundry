@@ -1,11 +1,13 @@
-# Motion graphics
+# Enumerate the states, then compile the arithmetic
 
-An illustrated example, not live telemetry. [Static image](overview.png).
+The first plate plots the exact 261 reachable pairs of held and issued counts in the 32-seat fixture with a hold limit of eight. The free count follows from the fixed total. The second plate shows the million-seat quota contract. The manager calls `fill_quota`, changing the counters to 750,000 free, 250,000 held and zero issued at revision 1.
 
-Regenerate with Python and Pillow in an isolated environment:
+The line over the bar marks the planned quantity. The counters change together when the operation commits. [Static storyboard](overview.png) · [Symbolic backend and benchmark](../SYMBOLIC.md)
+
+Regenerate with Python, Pillow, fontconfig, Latin Modern Roman and Noto Sans.
 
 ```sh
-python docs/motion/render.py foundry docs/motion /path/to/font-directory
+python3 docs/motion/render.py
 ```
 
-Fonts are selected from Roboto or DejaVu families, with serif and monospace alternatives when available. No font files are distributed. The animation generator is optional documentation tooling, not a product dependency.
+The command writes the GIF and the static PNG beside the renderer.
