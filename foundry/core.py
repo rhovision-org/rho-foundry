@@ -158,37 +158,46 @@ def synthesize(raw):
     for s,a,t in edges:
         for r in byname[a].roles:
             rows[r][(s,a)]=(t,(a,))
+    rule_count = sum(map(len, rows.values()))
+    require(rule_count <= MAX_RULES, "generated rule budget exceeded")
     plan_steps=0
     for g in p.goals:
+        allowed = set(g.actions)
         targets=[i for i,s in enumerate(states) if all(k.holds(s) for k in g.predicates)]
         rev=[[] for _ in states]
         for s,a,t in edges:
-            if a in g.actions:rev[t].append((a,s))
+            if a in allowed:rev[t].append(s)
         distance={i:0 for i in targets}; queue=deque(targets)
         while queue:
             t=queue.popleft()
-            for a,s in sorted(rev[t]):
+            for s in rev[t]:
                 if s not in distance:
                     distance[s]=distance[t]+1;queue.append(s)
         forward={}
         for s,a,t in edges:
-            if a in g.actions and s in distance and t in distance and distance[s]==distance[t]+1:
-                forward.setdefault(s,[]).append((a,t))
+            if a in allowed and s in distance and t in distance and distance[s]==distance[t]+1:
+                hop = (a, t)
+                if s not in forward or hop < forward[s]:
+                    forward[s] = hop
         for s in sorted(distance):
             if distance[s]==0:continue
             plan_steps += distance[s]
             require(plan_steps<=MAX_PLAN_STEPS, "plan budget exceeded")
-            require(sum(map(len,rows.values()))<MAX_RULES, "generated rule budget exceeded")
+            require(rule_count < MAX_RULES, "generated rule budget exceeded")
             t=s; path=[]
             while distance[t]:
-                a,u=min(forward[t]);path.append(a);t=u
-            rows[g.role][(s,g.name)]=(t,tuple(path))
-            plans[(g.name,s)]=tuple(path)
-    require(sum(map(len,rows.values()))<=MAX_RULES,"generated rule budget exceeded")
+                a,u=forward[t];path.append(a);t=u
+            steps = tuple(path)
+            rows[g.role][(s,g.name)]=(t,steps)
+            rule_count += 1
+            plans[(g.name,s)]=steps
     return p, states, edges, rows, plans
 
 def manifest(raw):
-    p,states,edges,rows,plans=synthesize(raw)
+    return _manifest(raw, synthesize(raw))
+
+def _manifest(raw, analysis):
+    p,states,edges,rows,plans=analysis
     return {
         "schema":1,"spec_sha256":digest(raw),"name":p.name,"resources":list(p.resources),"roles":list(p.roles),
         "states":[list(s) for s in states],"initial":0,"edges":[list(e) for e in edges],
@@ -199,7 +208,10 @@ def manifest(raw):
     }
 
 def rholang(raw):
-    p,states,edges,rows,plans=synthesize(raw)
+    return _rholang(synthesize(raw))
+
+def _rholang(analysis):
+    p, _, _, rows, _ = analysis
     # A single private token serializes every state transition across all roles.
     # Bundles grant send-only access. The initializer itself is caller-scoped.
     caps=["role_"+r for r in p.roles]
@@ -223,6 +235,11 @@ def rholang(raw):
                 "          }","        }","      }","    } |"]
     out += ["    ready!("+", ".join("bundle+{*"+c+"}" for c in caps)+")","  }","}"]
     return "\n".join(out)+"\n"
+
+def compile_protocol(raw):
+    """Produce both artifacts from a single reachability and planning pass."""
+    analysis = synthesize(raw)
+    return _manifest(raw, analysis), _rholang(analysis)
 
 def simulate(m, state, version, role, op, expected):
     require(integer(state,0,len(m["states"])-1) and integer(version,0,m["max_version"]),"invalid machine state")

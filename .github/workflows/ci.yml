@@ -47,9 +47,15 @@ jobs:
           chmod 700 .local/rholo/rnode
           echo '232d12bd5d3fadc8371c26ec6a888ea48a4062b1187bb63c35b9d19423f28ead  .local/rholo/rnode' | sha256sum -c
       - name: Execute generated contracts on isolated Rholo
-        run: PYTHONPATH=. python tools/runtime_check.py .local/rholo/rnode --out .local/runtime-results.json
+        run: |
+          PYTHONPATH=. python tools/runtime_check.py .local/rholo/rnode --out .local/runtime-results.json
+          PYTHONPATH=. python tools/probe_symbolic.py .local/rholo/rnode --out .local/symbolic-runtime.json
+          PYTHONPATH=. python tools/benchmark_symbolic.py --out .local/symbolic-benchmark.json
       - uses: actions/upload-artifact@v4
         with:
           name: actual-rholo-results
-          path: .local/runtime-results.json
+          path: |
+            .local/runtime-results.json
+            .local/symbolic-runtime.json
+            .local/symbolic-benchmark.json
           if-no-files-found: error

@@ -42,6 +42,16 @@ Now open [reservation.json](examples/reservation.json). Change the three resourc
 
 The [full tutorial](docs/GUIDE.md) walks through that edit, inspecting a generated plan and creating a complete runnable Rholang demonstration.
 
+## Set a quota on a million seats
+
+Use the symbolic backend for arithmetic protocols whose invariants can be proved per action. The [hold quota example](examples/hold-quota.json) limits active holds to 250,000 out of one million seats. A manager can fill the remaining quota in one revision. Each clerk operation still obeys the quota, conservation rule and role restrictions.
+
+```sh
+python3 -m foundry examples/hold-quota.json --symbolic --out quota
+```
+
+The symbolic compiler generates guards and counter updates directly. Its supported goals derive the exact number of repetitions of one authorized primitive. The [symbolic backend guide](docs/SYMBOLIC.md) covers the proof checks, operation replies, native run and benchmark.
+
 ## What is the compiler doing?
 
 The input specifies bounded integer resources, linear guards and invariants, actions and role-scoped goals. Foundry enumerates reachable states, checks declared invariants, finds shortest permitted goal paths and generates a factory with private state and revision checks.
@@ -68,9 +78,7 @@ The [recorded native runtime run](https://github.com/rhovision-org/rho-foundry/a
 - **[Rho Weave](https://github.com/rhovision-org/rho-weave)** — Find a safe next move when information is missing.
 - **[Rho Forge](https://github.com/rhovision-org/rho-forge)** — Turn resource flows into executable actors.
 
-Foundry and Forge are alternatives for generating finite contract logic. Weave helps design decisions around uncertain external conditions, while Observer reports network evidence. Foundry needs neither at compile time.
-
-They share a direction, not an automatic integration. [See how the pieces could fit together](docs/ECOSYSTEM.md).
+Foundry specializes in arithmetic rules, linear guards and large counters. Forge specializes in composed resource flows with independent revision scopes. Weave can derive recovery logic from an enumerated Foundry machine, and Observer supplies anchors for application reads. [How the projects fit together](docs/ECOSYSTEM.md)
 
 ## License
 
