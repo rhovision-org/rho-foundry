@@ -6,6 +6,10 @@
 
 ![Rho Foundry: describe the rules, generate the contract](docs/images/foundry.svg)
 
+![Animated Foundry overview](docs/motion/overview.gif)
+
+[Static version](docs/motion/overview.png) · [Motion source](docs/motion/README.md)
+
 ## Why I built this
 
 When we build systems, we spend a lot of time translating the same idea into different things: a specification, a state machine, permission checks, contract code and tests. Every translation is another place where we can misunderstand the original idea.
@@ -39,6 +43,19 @@ If the description contains a reachable violation of an invariant (a rule that m
 In this example the agent already has permission to reserve and buy seats. Foundry discovers a six-step path to the goal, then generates a single operation called `sellout`. That operation updates the modeled resources together.
 
 There is no external ticket service, payment provider or automatic consent involved. This is a small accounting example of how a more complicated workflow can be built out of simpler operations.
+
+## What it adds
+
+For each accepted finite specification, Foundry builds the reachable graph instead of requiring a developer to manually enumerate the contract branches. It checks declared invariants, respects allowed roles, and finds goal paths using only authorized primitive actions.
+
+A goal operation is an internal atomic transition from the current resource vector to its synthesized target. It does not execute several external contracts, collect real-world consent or bypass another role's authority.
+
+| Before | With Foundry |
+| --- | --- |
+| Manually translate guards into contract branches | Generate branches from reviewed predicates |
+| Manually map allowed roles | Generate separate role capabilities |
+| Reason about legal multi-step paths | Compute shortest authorized paths |
+| Maintain state IDs separately | Generate the machine description and contract together |
 
 ## How it works
 
@@ -302,16 +319,22 @@ For a bug report, include the specification and the output you expected. For a p
 
 ## The Rho project family
 
-Four independent tools exploring different parts of building on RhoVision: observing a system, deciding under uncertainty, and generating executable contracts.
+The four projects share an idea: make the parts of engineering that can be expressed precisely easier to inspect, reuse and execute. They are independent tools, not four stages of a mandatory runtime stack.
 
-| Project | What it does |
-| --- | --- |
-| [Rho Observer](https://github.com/rhovision-org/rho-observer) | Read-only network observations, coverage and evidence. |
-| [Rho Weave](https://github.com/rhovision-org/rho-weave) | Checked decision policies under partial information. |
-| [Rho Forge](https://github.com/rhovision-org/rho-forge) | Generate actors from resource-flow and conservation rules. |
-| **Rho Foundry (you are here)** | Generate contracts from integer resources, guards and goals. |
+| Project | Focus | Capability |
+| --- | --- | --- |
+| [Rho Observer](https://github.com/rhovision-org/rho-observer) | Read-only evidence | Compare configured endpoints and keep missing or conflicting evidence visible. |
+| [Rho Weave](https://github.com/rhovision-org/rho-weave) | Decision policies | Synthesize safe finite strategies when observations leave several states possible. |
+| [Rho Forge](https://github.com/rhovision-org/rho-forge) | Resource-flow actors | Generate Rholang actors from consumption, production, conservation and role-specific missions. |
+| **Rho Foundry (you are here)** | Guarded contracts | Generate Rholang factories from bounded integer resources, guards, invariants and goals. |
 
-These are complementary design directions, not an integrated runtime pipeline. Forge and Foundry have overlapping but distinct specification formats and actor interfaces. No project requires the others to run.
+### How they relate
+
+Foundry focuses on explicit rules and predicates over integer resources. It can represent guarded transitions and check whether reachable actions preserve declared invariants. Forge approaches a similar contract-generation problem with consumption/production, conservation rules and role-specific marking goals. Choose the model that fits the protocol; there is no required Forge-to-Foundry conversion.
+
+Observer can help a developer understand reported network conditions, and Weave can synthesize a decision policy for a separately authored uncertain protocol. Foundry does not currently integrate these runtime interfaces automatically.
+
+For a concrete example of how a developer could combine the ideas, see [the ecosystem guide](docs/ECOSYSTEM.md). The examples are architectural illustrations, not claims of an existing integrated deployment.
 
 ## License
 
