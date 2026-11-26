@@ -300,6 +300,19 @@ If you have a resource-based protocol in mind, try expressing it as a specificat
 
 For a bug report, include the specification and the output you expected. For a proposed change, a working example and a reproducible test are much more useful than a long description alone.
 
+## The Rho project family
+
+Four independent tools exploring different parts of building on RhoVision: observing a system, deciding under uncertainty, and generating executable contracts.
+
+| Project | What it does |
+| --- | --- |
+| [Rho Observer](https://github.com/rhovision-org/rho-observer) | Read-only network observations, coverage and evidence. |
+| [Rho Weave](https://github.com/rhovision-org/rho-weave) | Checked decision policies under partial information. |
+| [Rho Forge](https://github.com/rhovision-org/rho-forge) | Generate actors from resource-flow and conservation rules. |
+| **Rho Foundry (you are here)** | Generate contracts from integer resources, guards and goals. |
+
+These are complementary design directions, not an integrated runtime pipeline. Forge and Foundry have overlapping but distinct specification formats and actor interfaces. No project requires the others to run.
+
 ## License
 
 Rho Foundry is released under the [Apache License 2.0](LICENSE).
