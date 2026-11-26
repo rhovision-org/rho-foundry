@@ -6,6 +6,8 @@ I built Foundry to turn rules about quantities, permissions and limits into cont
 
 Created by [AixAria](https://github.com/aixaria0).
 
+Forge builds workflows with independent revision scopes. Weave can add recovery to an enumerated Foundry machine, and Observer helps the app select a finalized block to read. [Choose the right tool for the app](#put-the-right-contract-behind-the-app)
+
 ![The 32-seat enumerating example fills a grid of 261 reachable states. The symbolic million-seat example fills the hold quota in one revision, leaving 750,000 free, 250,000 held and zero issued.](docs/motion/overview.gif)
 
 [Static storyboard](docs/motion/overview.png) · [Text walkthrough](docs/motion/README.md)
