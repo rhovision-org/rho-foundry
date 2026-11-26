@@ -1,0 +1,41 @@
+{
+  "name": "hold_quota",
+  "resources": {
+    "free": {"initial": 1000000, "capacity": 1000000},
+    "held": {"initial": 0, "capacity": 1000000},
+    "issued": {"initial": 0, "capacity": 1000000}
+  },
+  "roles": ["clerk", "manager"],
+  "invariants": [
+    {"weights": {"free": 1, "held": 1, "issued": 1}, "op": "eq", "rhs": 1000000},
+    {"weights": {"held": 1}, "op": "le", "rhs": 250000}
+  ],
+  "actions": [
+    {
+      "name": "reserve",
+      "roles": ["clerk", "manager"],
+      "guards": [{"weights": {"held": 1}, "op": "le", "rhs": 249999}],
+      "delta": {"free": -1, "held": 1}
+    },
+    {
+      "name": "issue",
+      "roles": ["clerk"],
+      "guards": [],
+      "delta": {"held": -1, "issued": 1}
+    },
+    {
+      "name": "release",
+      "roles": ["manager"],
+      "guards": [],
+      "delta": {"held": -1, "free": 1}
+    }
+  ],
+  "goals": [
+    {
+      "name": "fill_quota",
+      "role": "manager",
+      "actions": ["reserve"],
+      "predicates": [{"weights": {"held": 1}, "op": "eq", "rhs": 250000}]
+    }
+  ]
+}

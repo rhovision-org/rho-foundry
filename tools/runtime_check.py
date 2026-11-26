@@ -35,8 +35,11 @@ def ports():
         for s in ss:s.close()
 
 def term(raw, body):
-    rs=", ".join("cap"+str(i) for i in range(len(raw["roles"])))
-    return "new out, factory, ready in { "+rholang(raw)+" | factory!(*ready) | for ("+rs+" <- ready) { "+body+" } }"
+    return wrap(raw["roles"], rholang(raw), body)
+
+def wrap(roles, source, body):
+    rs=", ".join("cap"+str(i) for i in range(len(roles)))
+    return "new out, factory, ready in { "+source+" | factory!(*ready) | for ("+rs+" <- ready) { "+body+" } }"
 
 def seq_body(raw, calls):
     inner="Nil"
@@ -55,7 +58,7 @@ def decode(item):
     if not isinstance(item,dict) or len(item)!=1:raise ValueError("malformed expression")
     k,v=next(iter(item.items()))
     if isinstance(v,dict):v=v.get("data")
-    if k=="ExprTuple" and isinstance(v,list):return [decode(x) for x in v]
+    if k in ("ExprTuple", "ExprList") and isinstance(v,list):return [decode(x) for x in v]
     if k=="ExprInt" and type(v) is int:return v
     if k=="ExprString" and type(v) is str:return v
     raise ValueError("unexpected expression: "+str(item)[:150])
@@ -106,7 +109,7 @@ def check(request,anchor,quick):
     invoke("instance-isolation",isolation,[[0,"OK",target,1],[1,"STATE",0,0]])
     return rows
 
-def run(binary,emulator=None,libdir=None,quick=False):
+def run(binary,emulator=None,libdir=None,quick=False,probe=check):
     if sha(binary)!=BINARY_SHA:raise ValueError("binary digest mismatch")
     cmd=([str(emulator)] if emulator else [])+[str(binary)]
     openssl=shutil.which("openssl")
@@ -148,7 +151,7 @@ def run(binary,emulator=None,libdir=None,quick=False):
                 if status is None:raise ValueError("isolated node startup failed: "+log.read_text(errors="replace").split("___ Begin jemalloc statistics ___")[0][-4000:])
                 if status.get("networkId")!=network or status.get("shardId")!="/foundry-isolated" or status.get("peers")!=0 or status.get("devMode") is not True:raise ValueError("isolation mismatch")
                 anchor=status["checkpoint"]["anchor"]; print("isolated runtime ready",flush=True)
-                rows=check(request,anchor,quick)
+                rows=probe(request,anchor,quick)
                 end=request("/api/status")
                 if end.get("networkId")!=network or end.get("peers")!=0 or end.get("latestBlockNumber")!=status.get("latestBlockNumber") or end["checkpoint"]["anchor"]!=anchor:raise ValueError("chain changed")
                 return {"runtime":version,"binary_sha256":BINARY_SHA,"compiler_sha256":sha(ROOT/"foundry/core.py"),"harness_sha256":sha(Path(__file__)),"emulated":bool(emulator),"quick":quick,"peers":0,"height_before":status["latestBlockNumber"],"height_after":end["latestBlockNumber"],"runs":len(rows),"passed":True,"rows":rows}
