@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420" role="img" aria-labelledby="title desc">
+<title id="title">Rho Foundry: from rules to executable Rholang</title>
+<desc id="desc">Resources, roles, actions, invariants and goals enter the Foundry compiler. Reachability, invariant checking and shortest authorized paths produce a Rholang contract and state machine.</desc>
+<defs>
+<linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101b2b"/><stop offset="1" stop-color="#182b3c"/></linearGradient>
+<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#263749" stroke-opacity=".5"/></pattern>
+<marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9Z" fill="#81dbc1"/></marker>
+</defs>
+<rect x="1" y="1" width="1078" height="418" rx="22" fill="url(#bg)" stroke="#384c5d"/>
+<rect x="20" y="20" width="1040" height="380" rx="12" fill="url(#grid)"/>
+<g font-family="system-ui,Segoe UI,sans-serif">
+<text x="44" y="59" fill="#81dbc1" font-size="13" letter-spacing="4" font-weight="700">R H O  /  F O U N D R Y</text>
+<text x="44" y="103" fill="#f0f5fa" font-size="31" font-weight="700">Describe the rules. Generate the contract.</text>
+<text x="45" y="132" fill="#b6c7d9" font-size="15">A small compiler for resource-based protocols on Rholang.</text>
+<rect x="44" y="162" width="254" height="196" rx="13" fill="#192b3b" stroke="#42566b"/>
+<text x="63" y="192" fill="#81dbc1" font-size="12" font-weight="700" letter-spacing="2">01 / YOUR IDEA</text>
+<g font-size="18" fill="#edf3f8"><text x="63" y="226">Resources</text><text x="63" y="254">Roles &amp; actions</text><text x="63" y="282">Rules that must hold</text><text x="63" y="310">Desired outcome</text></g>
+<text x="63" y="338" fill="#a6b8c9" font-size="13">A readable JSON file</text>
+<path d="M308 260H351" stroke="#81dbc1" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="365" y="162" width="349" height="196" rx="13" fill="#203a3d" stroke="#81dbc1"/>
+<text x="385" y="192" fill="#81dbc1" font-size="12" font-weight="700" letter-spacing="2">02 / THE COMPILER</text>
+<g fill="#edf3f8" font-size="17"><text x="385" y="226">Explore reachable states</text><text x="385" y="257">Reject broken invariants</text><text x="385" y="288">Find shortest authorized paths</text><text x="385" y="319">Generate atomic operations</text></g>
+<path d="M724 260H767" stroke="#81dbc1" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="781" y="162" width="255" height="196" rx="13" fill="#192b3b" stroke="#42566b"/>
+<text x="801" y="192" fill="#81dbc1" font-size="12" font-weight="700" letter-spacing="2">03 / RUNNABLE OUTPUT</text>
+<text x="801" y="231" fill="#f0f5fa" font-family="monospace" font-size="20" font-weight="700">contract.rho</text>
+<text x="801" y="253" fill="#b6c7d9" font-size="13">Executable Rholang factory</text>
+<path d="M801 273H1016" stroke="#42566b"/>
+<text x="801" y="305" fill="#f0f5fa" font-family="monospace" font-size="20" font-weight="700">machine.json</text>
+<text x="801" y="327" fill="#b6c7d9" font-size="13">States, transitions and paths</text>
+<text x="44" y="390" fill="#a6b8c9" font-size="13">Finite resources  /  Explicit authority  /  No external Python dependencies</text>
+</g>
+</svg>

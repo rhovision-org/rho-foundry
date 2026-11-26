@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="244" viewBox="0 0 1080 244" role="img" aria-labelledby="title desc">
+<title id="title">Recorded validation of the first working Foundry release</title><desc id="desc">271 of 271 Rholo runtime scenarios passed; 150 randomized reservation models compared; 4 of 4 GitHub Actions jobs passed, at run 45787135128.</desc>
+<rect x="1" y="1" width="1078" height="242" rx="19" fill="#142333" stroke="#394e62"/>
+<g font-family="system-ui,Segoe UI,sans-serif">
+<text x="35" y="40" fill="#81dbc1" font-size="13" font-weight="700" letter-spacing="2">MEASURED / FIRST VERIFIED BUILD</text>
+<g fill="#203344" stroke="#42586c"><rect x="35" y="63" width="327" height="125" rx="11"/><rect x="376" y="63" width="327" height="125" rx="11"/><rect x="717" y="63" width="328" height="125" rx="11"/></g>
+<g fill="#81dbc1" font-size="42" font-weight="700"><text x="55" y="120">271 / 271</text><text x="396" y="120">150</text><text x="737" y="120">4 / 4</text></g>
+<g fill="#edf3f8" font-size="17" font-weight="600"><text x="55" y="148">Rholo runtime scenarios</text><text x="396" y="148">Randomized models</text><text x="737" y="148">CI jobs passed</text></g>
+<g fill="#b6c7d9" font-size="13"><text x="55" y="169">Native Linux x86-64</text><text x="396" y="169">Compared with a reference search</text><text x="737" y="169">Python 3.11–3.13 + Rholo</text></g>
+<text x="35" y="219" fill="#b6c7d9" font-size="13">GitHub Actions run 45787135128  •  Fixture validation, not a universal proof of correctness.</text>
+</g>
+</svg>
